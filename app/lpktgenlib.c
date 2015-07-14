@@ -2297,6 +2297,7 @@ static void decompile_pkt(lua_State * L, port_info_t * info, uint32_t seqnum) {
 			(p->ethType == ETHER_TYPE_VLAN)? "vlan" : "unknown"));
 	setf_string(L, "ipProto", (char *)(
 			(p->ipProto == PG_IPPROTO_TCP)? "tcp" :
+			(p->ipProto == PG_IPPROTO_MPLSOUDP)? "mplsoudp" :
 			(p->ipProto == PG_IPPROTO_ICMP)? "icmp" : "udp"));
 
 	setf_integer(L, "pktSize", p->pktSize+FCS_SIZE);
@@ -2689,10 +2690,10 @@ static const luaL_Reg pktgenlib[] = {
   {"blink",			pktgen_blink},			// Blink an led on a port
   {"help",			pktgen_help},			// Return the help text
   {"Lua.help",		pktgen_lua_help},		// Lua command help text
-  
+
   {"isSending",		pktgen_isSending},		// Test to see if a port is sending packets
   {"linkState",		pktgen_linkState},		// Return the current link state of a port
-  
+
   {"portSizes",		pktgen_portSizes},		// Return the stats on the size of packet for a port.
   {"pktStats",		pktgen_pktStats},		// return the current packet stats on a port
   {"portStats", 	pktgen_portStats},		// return the current port stats

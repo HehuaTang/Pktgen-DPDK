@@ -136,6 +136,7 @@ pktgen_page_seq(uint32_t pid)
         snprintf(buff, sizeof(buff), "%s/%s:%04x", (pkt->ethType == ETHER_TYPE_IPv4)? "IPv4" :
                                                       (pkt->ethType == ETHER_TYPE_IPv6)? "IPv6" : "Other",
                                                       (pkt->ipProto == PG_IPPROTO_TCP)? "TCP" :
+                                                      (pkt->ipProto == PG_IPPROTO_MPLSOUDP)? "MPLSoUDP" :
                                                       (pkt->ipProto == PG_IPPROTO_ICMP)? "ICMP" : "UDP",
                                                     		  pkt->vlanid);
         wr_scrn_printf(row, col, "%*s", 15, buff);

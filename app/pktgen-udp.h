@@ -71,6 +71,7 @@
 #include <wr_inet.h>
 
 #include "pktgen-seq.h"
+#include "pktgen-mplsoudp.h"
 
 
 /**************************************************************************//**
@@ -86,5 +87,6 @@
 */
 
 extern void pktgen_udp_hdr_ctor(pkt_seq_t * pkt, udpip_t * uip, __attribute__ ((unused)) int type);
+extern void pktgen_mplsoudp_hdr_ctor(pkt_seq_t * pkt, mplsoudpip_t * uip, __attribute__ ((unused)) int type);
 
 #endif	// _PKTGEN_UDP_H_

@@ -106,6 +106,18 @@ pktgen_ipv4_ctor(pkt_seq_t * pkt, ipHdr_t * ip)
     ip->ident           = htons(pktgen.ident);
     ip->ffrag           = 0;
     ip->proto           = pkt->ipProto;
+
+    /*
+     * PG_IPPROTO_MPLSOUDP is used only to fell into the case for MPLSoUDP
+     * packets. It is not intended to be written into to the packet. The proto
+     * field in IPv4 header has to be set to PG_IPPROTO_UDP. It cannot be
+     * rewritten once in the pkt structure, because since the next packet we
+     * will fell into path for UDP packets. This is why it has to be changed
+     * every time IP header is generated.
+     */
+    if (ip->proto == PG_IPPROTO_MPLSOUDP)
+        ip->proto       = PG_IPPROTO_UDP;
+
     ip->src             = htonl(pkt->ip_src_addr);
     ip->dst             = htonl(pkt->ip_dst_addr);
     ip->cksum           = cksum(ip, sizeof(ipHdr_t), 0);

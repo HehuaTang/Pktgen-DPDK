@@ -450,6 +450,21 @@ pktgen_packet_ctor(port_info_t * info, int32_t seq_idx, int32_t type) {
 
 			pkt->tlen = pkt->ether_hdr_size + sizeof(ipHdr_t) + sizeof(udpHdr_t);
 
+		} else if ( pkt->ipProto == PG_IPPROTO_MPLSOUDP ) {
+			mplsoudpip_t	  * mplsoudp;
+
+			// Construct the Ethernet header
+			mplsoudp = (mplsoudpip_t *)ether_hdr;
+
+			// Construct the UDP header
+			pktgen_mplsoudp_hdr_ctor(pkt, mplsoudp, ETHER_TYPE_IPv4);
+
+			// IPv4 Header constructor
+			pktgen_ipv4_ctor(pkt, (ipHdr_t *)mplsoudp);
+
+			pkt->tlen = pkt->ether_hdr_size + sizeof(ipHdr_t)
+													+ sizeof(mplsoudpHdr_t);
+
 		} else if ( pkt->ipProto == PG_IPPROTO_ICMP ) {
 			udpip_t           * uip;
 			icmpv4Hdr_t       * icmp;

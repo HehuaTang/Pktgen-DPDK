@@ -183,6 +183,7 @@ pktgen_print_static_data(void)
                                               (pkt->ethType == ETHER_TYPE_IPv6)? "IPv6" :
 											  (pkt->ethType == ETHER_TYPE_ARP)? "ARP" : "Other",
                                               (pkt->ipProto == PG_IPPROTO_TCP)? "TCP" :
+                                              (pkt->ipProto == PG_IPPROTO_MPLSOUDP)? "MPLSoUDP" :
                                               (pkt->ipProto == PG_IPPROTO_ICMP)? "ICMP" : "UDP",
                                                pkt->vlanid);
         wr_scrn_printf(row++, col, "%*s", COLUMN_WIDTH_1, buff);

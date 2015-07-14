@@ -176,6 +176,7 @@ typedef struct ipv6Hdr_s {
 #define PG_IPPROTO_IPV4         IPPROTO_IPV4
 #define PG_IPPROTO_TCP          IPPROTO_TCP
 #define PG_IPPROTO_UDP          IPPROTO_UDP
+#define PG_IPPROTO_MPLSOUDP     18
 #define PG_IPPROTO_IPV6         IPPROTO_IPV6
 #define PG_IPPROTO_IPV6_ROUTE   43
 #define PG_IPPROTO_IPV6_FRAG    44

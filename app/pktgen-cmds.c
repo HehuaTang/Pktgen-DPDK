@@ -181,6 +181,7 @@ pktgen_save(char * path)
 				(pkt->ethType == ETHER_TYPE_ARP) ? "arp" :"unknown", i);
 		fprintf(fd, "proto %s %d\n",
 				(pkt->ipProto == PG_IPPROTO_TCP)? "tcp" :
+				(pkt->ipProto == PG_IPPROTO_MPLSOUDP)? "mplsoudp" :
 				(pkt->ipProto == PG_IPPROTO_ICMP)? "icmp" : "udp", i);
 		fprintf(fd, "set ip dst %d %s\n", i, inet_ntop4(buff, sizeof(buff), ntohl(pkt->ip_dst_addr), 0xFFFFFFFF));
 		fprintf(fd, "set ip src %d %s\n", i, inet_ntop4(buff, sizeof(buff), ntohl(pkt->ip_src_addr), pkt->ip_mask));
@@ -270,6 +271,7 @@ pktgen_save(char * path)
 							(pkt->ethType == ETHER_TYPE_IPv6)? "ipv6" :
 							(pkt->ethType == ETHER_TYPE_VLAN)? "vlan" : "Other",
 					(pkt->ipProto == PG_IPPROTO_TCP)? "tcp" :
+							(pkt->ipProto == PG_IPPROTO_MPLSOUDP)? "mplsoudp" :
 							(pkt->ipProto == PG_IPPROTO_ICMP)? "icmp" : "udp",
 					pkt->vlanid,
 					pkt->pktSize+FCS_SIZE);
@@ -925,6 +927,7 @@ pktgen_set_proto(port_info_t * info, char type)
 	info->seq_pkt[SINGLE_PKT].ipProto = (type == 'u')? PG_IPPROTO_UDP :
 									(type == 'i') ? PG_IPPROTO_ICMP :
 									(type == 't') ? PG_IPPROTO_TCP :
+									(type == 'm') ? PG_IPPROTO_MPLSOUDP :
 									/* TODO print error: unknown type */ PG_IPPROTO_TCP;
 
 	// ICMP only works on IPv4 packets.
@@ -2105,6 +2108,7 @@ void pktgen_set_seq(port_info_t * info, uint32_t seqnum,
 	pkt->sport			= sport;
 	pkt->pktSize		= pktsize-FCS_SIZE;
 	pkt->ipProto		= (proto == 'u')? PG_IPPROTO_UDP :
+						  (proto == 'm')? PG_IPPROTO_MPLSOUDP :
 						  (proto == 'i')? PG_IPPROTO_ICMP : PG_IPPROTO_TCP;
 	// Force the IP protocol to IPv4 if this is a ICMP packet.
 	if ( proto == 'i' )
@@ -2148,6 +2152,7 @@ void pktgen_compile_pkt(port_info_t * info, uint32_t seqnum,
 	pkt->sport			= sport;
 	pkt->pktSize		= pktsize-FCS_SIZE;
 	pkt->ipProto		= (proto == 'u')? PG_IPPROTO_UDP :
+						  (proto == 'm')? PG_IPPROTO_MPLSOUDP :
 						  (proto == 'i')? PG_IPPROTO_ICMP : PG_IPPROTO_TCP;
 	// Force the IP protocol to IPv4 if this is a ICMP packet.
 	if ( proto == 'i' )

@@ -108,3 +108,61 @@ pktgen_udp_hdr_ctor(pkt_seq_t * pkt, udpip_t * uip, __attribute__ ((unused)) int
     if ( uip->udp.cksum == 0 )
         uip->udp.cksum = 0xFFFF;
 }
+
+/**************************************************************************//**
+*
+* pktgen_mplsoudp_hdr_ctor - MPLSoUDP header constructor routine.
+*
+* DESCRIPTION
+* Construct the following header in a packer buffer:
+*             Outer UDP/MPLS label/Inner Ethernet/Inner IP/Inner UDP
+*
+* RETURNS: N/A
+*
+* SEE ALSO:
+* pktgen-mplsoudp.h
+*/
+
+void
+pktgen_mplsoudp_hdr_ctor(pkt_seq_t * pkt, mplsoudpip_t * uip, __attribute__ ((unused)) int type)
+{
+    uint16_t udp_len = pkt->pktSize - pkt->ether_hdr_size - sizeof(ipHdr_t);
+    //uint16_t inner_ip_len = udp_len - sizeof(mplsudpip_t) - pkt->ether_hdr_size;
+
+    // Zero out the header space
+    memset((char *)uip, 0, sizeof(mplsoudpip_t));
+
+    // Outer UDP header
+    uip->udp.sport         = htons(pkt->sport);
+    uip->udp.dport         = htons(pkt->dport);
+    uip->udp.len           = htons(udp_len);
+    uip->udp.cksum         = 0x0000;
+    uip->udp.mpls.label    = htonl(MPLSOUDP_MPLS_LABEL); //48 dec
+
+    // Inner Ethernet header
+    char src[] = MPLSOUDP_INNER_ETHER_SRC_MAC;
+    char dst[] = MPLSOUDP_INNER_ETHER_DST_MAC;
+    memcpy(&uip->udp.ether.s_addr, src, ETHER_ADDR_LEN);
+    memcpy(&uip->udp.ether.d_addr, dst, ETHER_ADDR_LEN);
+    uip->udp.ether.ether_type = htons(pkt->ethType);
+
+    // Inner IPv4 header
+    uip->udp.ip.vl        = (IPv4_VERSION << 4) | (sizeof(ipHdr_t) /4);
+    uip->udp.ip.tos       = 0;
+    //uip->udp.ip.tlen    = htons(inner_ip_len);
+    uip->udp.ip.tlen      = htons(0x002e);
+    pktgen.ident          += 27; // bump by a prime number
+    uip->udp.ip.ident     = htons(pktgen.ident);
+    uip->udp.ip.ffrag     = 0;
+    uip->udp.ip.ttl       = 4;
+    uip->udp.ip.proto     = PG_IPPROTO_UDP;
+    uip->udp.ip.src       = htonl(MPLSOUDP_INNER_IPV4_SRC_ADDR);
+    uip->udp.ip.dst       = htonl(MPLSOUDP_INNER_IPV4_DST_ADDR);
+    uip->udp.ip.cksum     = cksum(&uip->udp.ip, sizeof(ipHdr_t), 0);
+
+    // Inner UDP header
+    uip->udp.inner_udp.sport    = htons(1234);
+    uip->udp.inner_udp.dport    = htons(5678);
+    uip->udp.inner_udp.len      = htons(sizeof(udpHdr_t));
+    uip->udp.inner_udp.cksum    = 0x0000;
+}
