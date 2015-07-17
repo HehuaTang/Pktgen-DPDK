@@ -98,7 +98,8 @@ pktgen_udp_hdr_ctor(pkt_seq_t * pkt, udpip_t * uip, __attribute__ ((unused)) int
     uip->ip.proto       = pkt->ipProto;
 
 	uip->udp.len		= htons(tlen);
-    uip->udp.sport      = htons(pkt->sport);
+    // Incrementing sport generate multiple UDP streams.
+    uip->udp.sport      = htons(pkt->sport++);
     uip->udp.dport      = htons(pkt->dport);
 
 	// Includes the pseudo header information
@@ -127,6 +128,7 @@ void
 pktgen_mplsoudp_hdr_ctor(pkt_seq_t * pkt, mplsoudpip_t * uip, __attribute__ ((unused)) int type)
 {
     uint16_t udp_len = pkt->pktSize - pkt->ether_hdr_size - sizeof(ipHdr_t);
+    uint16_t inner_udp_sport = 1234;
     //uint16_t inner_ip_len = udp_len - sizeof(mplsudpip_t) - pkt->ether_hdr_size;
 
     // Zero out the header space
@@ -161,7 +163,8 @@ pktgen_mplsoudp_hdr_ctor(pkt_seq_t * pkt, mplsoudpip_t * uip, __attribute__ ((un
     uip->udp.ip.cksum     = cksum(&uip->udp.ip, sizeof(ipHdr_t), 0);
 
     // Inner UDP header
-    uip->udp.inner_udp.sport    = htons(1234);
+    // Incrementing sport generate multiple UDP streams.
+    uip->udp.inner_udp.sport    = htons(inner_udp_sport++);
     uip->udp.inner_udp.dport    = htons(5678);
     uip->udp.inner_udp.len      = htons(sizeof(udpHdr_t));
     uip->udp.inner_udp.cksum    = 0x0000;
