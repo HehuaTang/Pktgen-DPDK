@@ -437,8 +437,8 @@ main(int argc, char **argv)
     pktgen_log_set_screen_level(LOG_LEVEL_WARNING);
 	wr_scrn_erase(pktgen.scrn->nrows);
 
-	wr_logo(3, 16, PKTGEN_APP_NAME);
-	wr_splash_screen(3, 16, PKTGEN_APP_NAME, PKTGEN_CREATED_BY);
+	//wr_logo(3, 16, PKTGEN_APP_NAME);
+	//wr_splash_screen(3, 16, PKTGEN_APP_NAME, PKTGEN_CREATED_BY);
 
     wr_scrn_resume();
 

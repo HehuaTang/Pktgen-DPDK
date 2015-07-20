@@ -128,7 +128,7 @@ void
 pktgen_mplsoudp_hdr_ctor(pkt_seq_t * pkt, mplsoudpip_t * uip, __attribute__ ((unused)) int type)
 {
     uint16_t udp_len = pkt->pktSize - pkt->ether_hdr_size - sizeof(ipHdr_t);
-    uint16_t inner_udp_sport = 1234;
+    static uint16_t inner_udp_sport = 1234;
     //uint16_t inner_ip_len = udp_len - sizeof(mplsudpip_t) - pkt->ether_hdr_size;
 
     // Zero out the header space
