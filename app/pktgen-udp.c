@@ -136,6 +136,7 @@ pktgen_mplsoudp_hdr_ctor(pkt_seq_t * pkt, mplsoudpip_t * uip, __attribute__ ((un
 
     // Outer UDP header
     uip->udp.sport         = htons(pkt->sport);
+    pkt->sport += 2;
     uip->udp.dport         = htons(pkt->dport);
     uip->udp.len           = htons(udp_len);
     uip->udp.cksum         = 0x0000;
